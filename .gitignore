@@ -1,0 +1,11 @@
+# Build
+bin/
+obj/
+
+# VS
+.vs/
+*.user
+
+# Env
+*.env
+appsettings.Development.json
