@@ -1,9 +1,9 @@
 using Microsoft.OpenApi.Models;
+using TicketPrime.API.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -35,8 +35,9 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.MapPost("/api/evento", (CriarEventoDto dto) =>
+{
+    return Results.Ok();
+});
 
 app.Run();

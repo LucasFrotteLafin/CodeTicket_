@@ -1,15 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using TicketPrime.API.Models;
+namespace TicketPrime.API.DTOs;
 
-namespace TicketPrime.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class EventoController : ControllerBase
-{
-    [HttpPost]
-    public void AdicionaEvento([FromBody] Evento evento)
-    {
-
-    }
-}
+public record CriarEventoDto(
+    string Nome,
+    int CapacidadeTotal,
+    DateTime DataEvento,
+    decimal PrecoDoIngresso
+);
