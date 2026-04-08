@@ -1,36 +1,36 @@
-CREATE TABLE Usuarios (
-    Cpf VARCHAR(14) PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Email VARCHAR(100) NOT NULL
+CREATE TABLE usuarios (
+    cpf VARCHAR(14) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Eventos (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nome VARCHAR(150) NOT NULL,
-    CapacidadeTotal INT NOT NULL,
-    DataEvento DATETIME NOT NULL,
-    PrecoPadrao DECIMAL(10,2) NOT NULL
+CREATE TABLE eventos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    capacidadetotal INT NOT NULL,
+    dataevento TIMESTAMP NOT NULL,
+    precopadrao DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE Cupons (
-    Codigo VARCHAR(50) PRIMARY KEY,
-    PorcentagemDesconto DECIMAL(5,2) NOT NULL,
-    ValorMinimoRegra DECIMAL(10,2) NOT NULL
+CREATE TABLE cupons (
+    codigo VARCHAR(50) PRIMARY KEY,
+    porcentagemdesconto DECIMAL(5,2) NOT NULL,
+    valorminimoregra DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE Reservas (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    UsuarioCpf VARCHAR(14) NOT NULL,
-    EventoId INT NOT NULL,
-    CupomUtilizado VARCHAR(50) NULL,
-    ValorFinalPago DECIMAL(10,2) NOT NULL,
+CREATE TABLE reservas (
+    id SERIAL PRIMARY KEY,
+    usuariocpf VARCHAR(14) NOT NULL,
+    eventoid INT NOT NULL,
+    cupomutilizado VARCHAR(50) NULL,
+    valorfinalpago DECIMAL(10,2) NOT NULL,
 
-    CONSTRAINT FK_Reservas_Usuarios
-        FOREIGN KEY (UsuarioCpf) REFERENCES Usuarios(Cpf),
+    CONSTRAINT fk_reservas_usuarios
+        FOREIGN KEY (usuariocpf) REFERENCES usuarios(cpf),
 
-    CONSTRAINT FK_Reservas_Eventos
-        FOREIGN KEY (EventoId) REFERENCES Eventos(Id),
+    CONSTRAINT fk_reservas_eventos
+        FOREIGN KEY (eventoid) REFERENCES eventos(id),
 
-    CONSTRAINT FK_Reservas_Cupons
-        FOREIGN KEY (CupomUtilizado) REFERENCES Cupons(Codigo)
+    CONSTRAINT fk_reservas_cupons
+        FOREIGN KEY (cupomutilizado) REFERENCES cupons(codigo)
 );

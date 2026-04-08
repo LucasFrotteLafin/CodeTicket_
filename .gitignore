@@ -6,6 +6,3 @@ obj/
 .vs/
 *.user
 
-# Env
-*.env
-appsettings.Development.json

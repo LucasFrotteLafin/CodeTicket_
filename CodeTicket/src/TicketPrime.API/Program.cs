@@ -1,13 +1,11 @@
 using Microsoft.OpenApi.Models;
 using TicketPrime.API.DTOs;
-using Dapper;
-using Npgsql;
-using System.Data
+using TicketPrime.API.Repositories;
+using TicketPrime.API.Services;
+
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var builder = WebApplication.CreateBuilder(args);
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -15,6 +13,11 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "TicketPrime API", Version = "v1" });
 });
 
+builder.Services.AddSingleton<DbConnectionFactory>();
+builder.Services.AddScoped<UsuarioRepository>();
+builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<EventoRepository>();
+builder.Services.AddScoped<EventoService>();
 
 builder.Services.AddCors(options =>
 {
@@ -28,59 +31,27 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "TicketPrime API v1");
-    options.RoutePrefix = string.Empty; 
+    options.RoutePrefix = string.Empty;
 });
-
-app.UseHttpsRedirection();
 
 app.UseCors();
 
-app.MapPost("/api/evento", (CriarEventoDto dto) =>
+// Endpoint Criar Evento
+app.MapPost("/api/eventos", async (CriarEventoDto dto, EventoService service) =>
 {
-    return Results.Ok();
+    var (sucesso, mensagem) = await service.CriarEvento(dto);
+    return sucesso ? Results.Ok(mensagem) : Results.BadRequest(mensagem);
 });
 
-
-//NÃO deixar hardcoded na entrega final, mas ok por enquanto!!!
-string connectionString = "Host=localhost;Port=5432;Database=ticketprime;Username=postgres;Password=123456";
-
-//Endpoint:POST /api/usuarios
-app.MapPost("/api/usuarios", async (Usuario usuario) =>
+//Endpoint Criar Usuario
+app.MapPost("/api/usuarios", async (CriarUsuarioDto dto, UsuarioService service) =>
 {
-using (IDbConnection db = new NpgsqlConnection(connectionString))
-{
-//Verifica se CPF ja existe
-var usuarioExistente = await db.QueryFirstOrDefaultAsync<Usuario>(
-    "SELECT * FROM Usuarios WHERE Cpf = @Cpf",
-    new { usuario.Cpf }
-);
-
-if (usuarioExistente != null)
-{
-return Results.BadRequest("CPF já cadastrado.");
-}
-
-//insere no banco
-var sql = @"INSERT INTO Usuarios (Cpf, Nome, Email)
-                    VALUES (@Cpf, @Nome, @Email)";
-
-await db.ExecuteAsync(sql, usuario);
-
-return Results.Ok("Usuário cadastrado com sucesso!");
-}
+    var (sucesso, mensagem) = await service.CriarUsuario(dto);
+    return sucesso ? Results.Ok(mensagem) : Results.BadRequest(mensagem);
 });
 
 app.Run();
-
-//Modelo teste
-public class Usuario
-{
-    public string Cpf { get; set; }
-    public string Nome { get; set; }
-    public string Email { get; set; }
-}

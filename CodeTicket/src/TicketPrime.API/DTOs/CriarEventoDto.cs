@@ -1,8 +1,9 @@
 namespace TicketPrime.API.DTOs;
 
-public record CriarEventoDto(
-    string Nome,
-    int CapacidadeTotal,
-    DateTime DataEvento,
-    decimal PrecoDoIngresso
-);
+public class CriarEventoDto
+{
+    public string Nome { get; set; } = null!;
+    public int CapacidadeTotal { get; set; }
+    public DateTime DataEvento { get; set; }
+    public decimal PrecoPadrao { get; set; }
+}
