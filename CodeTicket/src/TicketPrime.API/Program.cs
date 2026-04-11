@@ -18,6 +18,8 @@ builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<EventoRepository>();
 builder.Services.AddScoped<EventoService>();
+builder.Services.AddScoped<CupomRepository>();
+builder.Services.AddScoped<CupomService>();
 
 builder.Services.AddCors(options =>
 {
@@ -51,6 +53,13 @@ app.MapPost("/api/eventos", async (CriarEventoDto dto, EventoService service) =>
 app.MapPost("/api/usuarios", async (CriarUsuarioDto dto, UsuarioService service) =>
 {
     var (sucesso, mensagem) = await service.CriarUsuario(dto);
+    return sucesso ? Results.Ok(mensagem) : Results.BadRequest(mensagem);
+});
+
+// Endpoint Criar Cupom
+app.MapPost("/api/cupons", async (CriarCupomDto dto, CupomService service) =>
+{
+    var (sucesso, mensagem) = await service.CriarCupom(dto);
     return sucesso ? Results.Ok(mensagem) : Results.BadRequest(mensagem);
 });
 
