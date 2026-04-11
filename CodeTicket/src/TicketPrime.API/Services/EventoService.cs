@@ -33,4 +33,8 @@ public class EventoService(EventoRepository repository)
 
     return (true, "Evento criado com sucesso!");
   }
+public async Task<IEnumerable<EventoListarDto>> ListarEventos()
+    {
+        return await repository.ListarEventos();
+    }
 }

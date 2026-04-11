@@ -63,4 +63,11 @@ app.MapPost("/api/cupons", async (CriarCupomDto dto, CupomService service) =>
     return sucesso ? Results.Ok(mensagem) : Results.BadRequest(mensagem);
 });
 
+//  LISTAR EVENTOS
+app.MapGet("/api/eventos", async (EventoService service) =>
+{
+    var eventos = await service.ListarEventos();
+    return Results.Ok(eventos);
+});
+
 app.Run();
