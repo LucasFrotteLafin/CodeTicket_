@@ -1,0 +1,186 @@
+@page "/eventos"
+@inject ApiService Api
+@inject ISnackbar Snackbar
+
+<PageTitle>CodeTicket — Eventos</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1 fw-bold">Eventos 🎪</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-6 mud-text-secondary">
+    Cadastre e visualize os eventos disponíveis no sistema.
+</MudText>
+
+<MudGrid Spacing="4">
+
+    {{!-- Formulário --}}
+    <MudItem xs="12" md="5">
+        <MudCard Elevation="3" Class="rounded-lg">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.AddCircle" Color="Color.Primary" Class="mr-2" />
+                        <MudText Typo="Typo.h6" Class="fw-bold">Novo Evento</MudText>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_model.Nome"
+                              Label="Nome do Evento"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.MusicNote"
+                              Class="mb-3" />
+
+                <MudNumericField @bind-Value="_model.CapacidadeTotal"
+                                 Label="Capacidade Total"
+                                 Variant="Variant.Outlined"
+                                 Adornment="Adornment.Start"
+                                 AdornmentIcon="@Icons.Material.Filled.People"
+                                 Min="1"
+                                 Class="mb-3" />
+
+                <MudDatePicker @bind-Date="_model.DataEvento"
+                               Label="Data do Evento"
+                               Variant="Variant.Outlined"
+                               Adornment="Adornment.Start"
+                               AdornmentIcon="@Icons.Material.Filled.CalendarMonth"
+                               Class="mb-3" />
+
+                <MudNumericField @bind-Value="_model.PrecoPadrao"
+                                 Label="Preço Padrão (R$)"
+                                 Variant="Variant.Outlined"
+                                 Adornment="Adornment.Start"
+                                 AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                 Format="F2"
+                                 Min="0.01m"
+                                 Class="mb-3" />
+            </MudCardContent>
+            <MudCardActions Class="px-4 pb-4">
+                <MudButton OnClick="Cadastrar"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           FullWidth="true"
+                           Disabled="_carregando"
+                           StartIcon="@Icons.Material.Filled.Save">
+                    @if (_carregando)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>Salvando...</span>
+                    }
+                    else
+                    {
+                        <span>Cadastrar Evento</span>
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    {{!-- Listagem --}}
+    <MudItem xs="12" md="7">
+        <MudCard Elevation="3" Class="rounded-lg">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex align-center justify-space-between">
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.List" Color="Color.Primary" Class="mr-2" />
+                            <MudText Typo="Typo.h6" Class="fw-bold">Eventos Cadastrados</MudText>
+                        </div>
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">@_eventos.Count evento(s)</MudChip>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                @if (_carregandoLista)
+                {
+                    <div class="d-flex justify-center pa-6">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    </div>
+                }
+                else if (_eventos.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                        Nenhum evento cadastrado ainda. Crie o primeiro!
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="_eventos" Hover="true" Striped="true" Dense="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>#</MudTh>
+                            <MudTh>Nome do Evento</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>
+                                <MudChip T="string" Size="Size.Small" Color="Color.Default">@context.Id</MudChip>
+                            </MudTd>
+                            <MudTd>
+                                <div class="d-flex align-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Event" Size="Size.Small" Class="mr-2 mud-text-secondary" />
+                                    @context.Nome
+                                </div>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+    private CriarEventoModel _model = new();
+    private List<EventoListarModel> _eventos = [];
+    private bool _carregando = false;
+    private bool _carregandoLista = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarEventos();
+    }
+
+    private async Task CarregarEventos()
+    {
+        _carregandoLista = true;
+        _eventos = await Api.ListarEventos();
+        _carregandoLista = false;
+    }
+
+    private async Task Cadastrar()
+    {
+        if (string.IsNullOrWhiteSpace(_model.Nome))
+        {
+            Snackbar.Add("Informe o nome do evento.", Severity.Warning);
+            return;
+        }
+        if (_model.DataEvento == null)
+        {
+            Snackbar.Add("Informe a data do evento.", Severity.Warning);
+            return;
+        }
+
+        _carregando = true;
+        var payload = new CriarEventoModel
+        {
+            Nome = _model.Nome,
+            CapacidadeTotal = _model.CapacidadeTotal,
+            DataEvento = _model.DataEvento,
+            PrecoPadrao = _model.PrecoPadrao
+        };
+
+        var (sucesso, mensagem) = await Api.CriarEvento(payload);
+
+        if (sucesso)
+        {
+            Snackbar.Add(mensagem, Severity.Success);
+            _model = new();
+            await CarregarEventos();
+        }
+        else
+        {
+            Snackbar.Add(mensagem, Severity.Error);
+        }
+
+        _carregando = false;
+    }
+}

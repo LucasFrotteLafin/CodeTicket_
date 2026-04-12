@@ -1,0 +1,129 @@
+@page "/cupons"
+@inject ApiService Api
+@inject ISnackbar Snackbar
+
+<PageTitle>CodeTicket — Cupons</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1 fw-bold">Cupons de Desconto 🏷️</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-6 mud-text-secondary">
+    Crie cupons com percentual e valor mínimo de aplicação.
+</MudText>
+
+<MudGrid Spacing="4" Justify="Justify.Center">
+    <MudItem xs="12" sm="10" md="7" lg="6">
+        <MudCard Elevation="3" Class="rounded-lg">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.AddCard" Color="Color.Tertiary" Class="mr-2" />
+                        <MudText Typo="Typo.h6" Class="fw-bold">Novo Cupom</MudText>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_model.Codigo"
+                              Label="Código do Cupom"
+                              HelperText="Ex: VERAO25, PROMO10"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.QrCode"
+                              Class="mb-4" />
+
+                <MudText Typo="Typo.body2" Class="mb-1">
+                    Percentual de Desconto: <strong>@_model.PorcentagemDesconto%</strong>
+                </MudText>
+                <MudSlider @bind-Value="_model.PorcentagemDesconto"
+                           Min="1"
+                           Max="100"
+                           Step="1"
+                           Color="Color.Tertiary"
+                           Class="mb-4">
+                    <MudText Typo="Typo.caption">1%</MudText>
+                    <MudText Typo="Typo.caption">100%</MudText>
+                </MudSlider>
+
+                <MudNumericField @bind-Value="_model.ValorMinimoRegra"
+                                 Label="Valor Mínimo para Aplicar (R$)"
+                                 HelperText="Valor mínimo da compra para usar o cupom"
+                                 Variant="Variant.Outlined"
+                                 Adornment="Adornment.Start"
+                                 AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                 Format="F2"
+                                 Min="0"
+                                 Class="mb-3" />
+
+                <MudPaper Elevation="0" Class="pa-3 rounded mud-background-gray">
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary">Prévia do cupom</MudText>
+                    <div class="d-flex align-center justify-space-between mt-1">
+                        <MudChip T="string" Color="Color.Tertiary" Icon="@Icons.Material.Filled.LocalOffer">
+                            @(string.IsNullOrWhiteSpace(_model.Codigo) ? "CODIGO" : _model.Codigo.ToUpper())
+                        </MudChip>
+                        <MudText Typo="Typo.body1" Class="fw-bold">@_model.PorcentagemDesconto% OFF</MudText>
+                        <MudText Typo="Typo.caption" Class="mud-text-secondary">
+                            Mín. R$ @_model.ValorMinimoRegra.ToString("F2")
+                        </MudText>
+                    </div>
+                </MudPaper>
+            </MudCardContent>
+            <MudCardActions Class="px-4 pb-4">
+                <MudButton OnClick="Cadastrar"
+                           Variant="Variant.Filled"
+                           Color="Color.Tertiary"
+                           FullWidth="true"
+                           Disabled="_carregando"
+                           StartIcon="@Icons.Material.Filled.Save">
+                    @if (_carregando)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>Salvando...</span>
+                    }
+                    else
+                    {
+                        <span>Cadastrar Cupom</span>
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+
+        <MudPaper Elevation="1" Class="pa-4 mt-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" Class="mr-2" Size="Size.Small" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Regras de Cupom</MudText>
+            </div>
+            <MudList T="string" Dense="true">
+                <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                    Percentual deve estar entre 1% e 100%
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                    Valor mínimo não pode ser negativo
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Cancel" IconColor="Color.Error">
+                    Código duplicado será rejeitado com erro 400
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private CriarCupomModel _model = new() { PorcentagemDesconto = 10 };
+    private bool _carregando = false;
+
+    private async Task Cadastrar()
+    {
+        _carregando = true;
+        var (sucesso, mensagem) = await Api.CriarCupom(_model);
+
+        if (sucesso)
+        {
+            Snackbar.Add(mensagem, Severity.Success);
+            _model = new() { PorcentagemDesconto = 10 };
+        }
+        else
+        {
+            Snackbar.Add(mensagem, Severity.Error);
+        }
+
+        _carregando = false;
+    }
+}

@@ -1,0 +1,109 @@
+@page "/usuarios"
+@inject ApiService Api
+@inject ISnackbar Snackbar
+
+<PageTitle>CodeTicket — Usuários</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1 fw-bold">Usuários 👤</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-6 mud-text-secondary">
+    Cadastre usuários no sistema. O CPF é único e protege contra cambistas.
+</MudText>
+
+<MudGrid Spacing="4" Justify="Justify.Center">
+    <MudItem xs="12" sm="10" md="7" lg="6">
+        <MudCard Elevation="3" Class="rounded-lg">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Secondary" Class="mr-2" />
+                        <MudText Typo="Typo.h6" Class="fw-bold">Novo Usuário</MudText>
+                    </div>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField @bind-Value="_model.Cpf"
+                              Label="CPF"
+                              HelperText="Somente números, 11 dígitos"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Badge"
+                              MaxLength="11"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.Nome"
+                              Label="Nome Completo"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Person"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.Email"
+                              Label="E-mail"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Email"
+                              InputType="InputType.Email"
+                              Class="mb-3" />
+            </MudCardContent>
+            <MudCardActions Class="px-4 pb-4">
+                <MudButton OnClick="Cadastrar"
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           FullWidth="true"
+                           Disabled="_carregando"
+                           StartIcon="@Icons.Material.Filled.HowToReg">
+                    @if (_carregando)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>Cadastrando...</span>
+                    }
+                    else
+                    {
+                        <span>Cadastrar Usuário</span>
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+
+        <MudPaper Elevation="1" Class="pa-4 mt-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Info" Class="mr-2" Size="Size.Small" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Regras de Cadastro</MudText>
+            </div>
+            <MudList T="string" Dense="true">
+                <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                    CPF deve ter exatamente 11 dígitos numéricos
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                    E-mail deve ter formato válido (ex: nome@dominio.com)
+                </MudListItem>
+                <MudListItem T="string" Icon="@Icons.Material.Filled.Cancel" IconColor="Color.Error">
+                    CPF já cadastrado será rejeitado com erro 400
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private CriarUsuarioModel _model = new();
+    private bool _carregando = false;
+
+    private async Task Cadastrar()
+    {
+        _carregando = true;
+        var (sucesso, mensagem) = await Api.CriarUsuario(_model);
+
+        if (sucesso)
+        {
+            Snackbar.Add(mensagem, Severity.Success);
+            _model = new();
+        }
+        else
+        {
+            Snackbar.Add(mensagem, Severity.Error);
+        }
+
+        _carregando = false;
+    }
+}

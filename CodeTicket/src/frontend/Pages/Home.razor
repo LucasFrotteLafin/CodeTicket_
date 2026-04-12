@@ -1,0 +1,117 @@
+@page "/"
+
+<PageTitle>CodeTicket — Início</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-1 fw-bold">Bem-vindo ao CodeTicket 🎟️</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-6 mud-text-secondary">
+    Sistema de gerenciamento de ingressos — rápido, seguro e confiável.
+</MudText>
+
+<MudGrid Spacing="4">
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="3" Class="rounded-lg h-100">
+            <MudCardContent>
+                <div class="d-flex align-center mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Event" Color="Color.Primary" Size="Size.Large" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold">Eventos</MudText>
+                </div>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Cadastre shows, festivais e eventos com capacidade, data e preço. O sistema garante que nenhum ingresso seja vendido além do limite.
+                </MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/eventos" Variant="Variant.Text" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward">
+                    Gerenciar Eventos
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="3" Class="rounded-lg h-100">
+            <MudCardContent>
+                <div class="d-flex align-center mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Secondary" Size="Size.Large" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold">Usuários</MudText>
+                </div>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Cadastre usuários com CPF único. O sistema bloqueia automaticamente cambistas que tentam se registrar com o mesmo CPF.
+                </MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/usuarios" Variant="Variant.Text" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.ArrowForward">
+                    Gerenciar Usuários
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="3" Class="rounded-lg h-100">
+            <MudCardContent>
+                <div class="d-flex align-center mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.LocalOffer" Color="Color.Tertiary" Size="Size.Large" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold">Cupons</MudText>
+                </div>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Crie cupons de desconto com percentual e valor mínimo. O sistema impede que descontos gerem valores negativos.
+                </MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/cupons" Variant="Variant.Text" Color="Color.Tertiary" EndIcon="@Icons.Material.Filled.ArrowForward">
+                    Gerenciar Cupons
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+<MudDivider Class="my-8" />
+
+<MudText Typo="Typo.h6" Class="mb-4 fw-bold">Por que o CodeTicket é seguro?</MudText>
+<MudGrid Spacing="3">
+    <MudItem xs="12" sm="6">
+        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Success" Class="mr-2" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Proteção contra SQL Injection</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                Todas as queries usam parâmetros nomeados via Dapper. Nenhum dado do usuário é concatenado diretamente no SQL.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Class="mr-2" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Bloqueio de Cambistas</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                O CPF é a chave primária da tabela de usuários. Tentativas de cadastro duplicado são rejeitadas com erro 400.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.EventBusy" Color="Color.Warning" Class="mr-2" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Controle de Capacidade</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                Eventos têm capacidade máxima definida. O sistema impede a venda de ingressos além do limite cadastrado.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
+            <div class="d-flex align-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Info" Class="mr-2" />
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Cupons sem Fraude</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                Cupons têm valor mínimo de aplicação e percentual limitado a 100%. Descontos que gerariam valores negativos são bloqueados.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

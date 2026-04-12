@@ -1,4 +1,5 @@
 <Solution>
-  <Project Path="CodeTicket/src/TicketPrime.API/TicketPrime.API.csproj" />
+  <Project Path="CodeTicket/src/backend/CodeTicket.API.csproj" />
+  <Project Path="CodeTicket/src/frontend/CodeTicket.Frontend.csproj" />
   <Project Path="CodeTicket/tests/TicketPrime.Tests/TicketPrime.Tests.csproj" />
 </Solution>
