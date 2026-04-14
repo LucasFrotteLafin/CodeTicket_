@@ -10,7 +10,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("http://localhost:5007")
+    BaseAddress = new Uri(builder.HostEnvironment.IsProduction()
+        ? "https://codeticket-production.up.railway.app"
+        : "http://localhost:5007")
 });
 
 builder.Services.AddScoped<ApiService>();
