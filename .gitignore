@@ -5,4 +5,13 @@ obj/
 # VS
 .vs/
 *.user
+*.csproj.user
 
+# Arquivos gerados
+.gitattributes
+
+# Senhas e configurações locais
+# appsettings.Development.json
+
+# Build do frontend
+src/frontend/publish/

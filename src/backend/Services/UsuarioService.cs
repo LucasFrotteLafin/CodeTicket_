@@ -8,13 +8,14 @@ namespace CodeTicket.API.Services;
 public class UsuarioService(IUsuarioRepository repository)
 {
     private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+    private static readonly Regex CpfRegex = new(@"^\d{11}$", RegexOptions.Compiled);
 
     public async Task<(bool sucesso, string mensagem)> CriarUsuario(CriarUsuarioDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Cpf))
             return (false, "CPF é obrigatório.");
 
-        if (!Regex.IsMatch(dto.Cpf, @"^\d{11}$"))
+        if (!CpfRegex.IsMatch(dto.Cpf))
             return (false, "CPF deve conter exatamente 11 dígitos numéricos.");
 
         if (string.IsNullOrWhiteSpace(dto.Nome))

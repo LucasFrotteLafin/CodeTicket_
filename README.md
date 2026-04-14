@@ -6,6 +6,16 @@ O sistema foi projetado para ser rápido, seguro contra SQL Injection e rigoroso
 
 ---
 
+## Hospedagem
+
+| Serviço | Plataforma | URL |
+|---------|------------|-----|
+| Backend (API) | Railway | configurar após deploy |
+| Frontend (Blazor) | Railway | configurar após deploy |
+| Banco de Dados | Railway PostgreSQL | gerenciado pelo Railway |
+
+---
+
 ## Pré-requisitos
 
 Antes de rodar o projeto, certifique-se de ter instalado:
@@ -22,22 +32,27 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 /
 ├── README.md
 ├── CodeTicket.slnx
-└── CodeTicket/
-    ├── db/
-    │   └── script.sql              # Script de criação das tabelas
-    ├── docs/
-    │   ├── requisitos.md           # Histórias de usuário e critérios BDD
-    │   └── arquitetura.md          # Decisões de arquitetura e diagrama de camadas
-    ├── src/
-    │   └── backend/                # Projeto da Minimal API
-    │       ├── Data/
-    │       ├── DTOs/
-    │       ├── Models/
-    │       ├── Repositories/
-    │       ├── Services/
-    │       └── Program.cs
-    └── tests/
-        └── TicketPrime.Tests/      # Projeto de testes xUnit
+├── db/
+│   └── script.sql              # Script de criação das tabelas
+├── docs/
+│   ├── requisitos.md           # Histórias de usuário e critérios BDD
+│   └── arquitetura.md          # Decisões de arquitetura e diagrama de camadas
+├── src/
+│   ├── backend/                # Projeto da Minimal API
+│   │   ├── Data/
+│   │   ├── DTOs/
+│   │   ├── Models/
+│   │   ├── Repositories/
+│   │   ├── Services/
+│   │   └── Program.cs
+│   └── frontend/               # Projeto Blazor WebAssembly
+│       ├── Layout/
+│       ├── Models/
+│       ├── Pages/
+│       ├── Services/
+│       └── Program.cs
+└── tests/
+    └── TicketPrime.Tests/      # Projeto de testes xUnit
 ```
 
 ---
@@ -47,23 +62,23 @@ Antes de rodar o projeto, certifique-se de ter instalado:
 ### 1. Criar o banco
 
 ```bash
-psql -U postgres -c "CREATE DATABASE ticketprime;"
+psql -U postgres -c "CREATE DATABASE codeticket;"
 ```
 
 ### 2. Executar o script de criação das tabelas
 
 ```bash
-psql -U postgres -d ticketprime -f CodeTicket/db/script.sql
+psql -U postgres -d codeticket -f db/script.sql
 ```
 
 ### 3. Configurar a connection string
 
-Edite o arquivo `CodeTicket/src/backend/appsettings.Development.json`:
+Edite o arquivo `src/backend/appsettings.Development.json` substituindo `SUA_SENHA_AQUI` pela sua senha do PostgreSQL:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=ticketprime;Username=postgres;Password=sua_senha"
+    "DefaultConnection": "Host=localhost;Port=5432;Database=codeticket;Username=postgres;Password=SUA_SENHA_AQUI"
   }
 }
 ```
@@ -73,7 +88,7 @@ Edite o arquivo `CodeTicket/src/backend/appsettings.Development.json`:
 ## Executar a API
 
 ```bash
-cd CodeTicket/src/backend
+cd src/backend
 dotnet run
 ```
 
@@ -90,7 +105,7 @@ A API estará disponível em:
 ## Executar os Testes
 
 ```bash
-cd CodeTicket/tests/TicketPrime.Tests
+cd tests/TicketPrime.Tests
 dotnet test
 ```
 
