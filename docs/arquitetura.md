@@ -6,7 +6,7 @@ Este documento descreve as decisões de arquitetura, a organização em camadas,
 
 ## Visão Geral
 
-O CodeTicket é um backend construído como uma **Minimal API em .NET 8**, seguindo uma arquitetura em camadas com separação clara de responsabilidades. O acesso ao banco de dados é feito exclusivamente via **Dapper** com parâmetros nomeados, eliminando qualquer risco de SQL Injection.
+O CodeTicket é um backend construído como uma **Minimal API em .NET 10**, seguindo uma arquitetura em camadas com separação clara de responsabilidades. O acesso ao banco de dados é feito exclusivamente via **Dapper** com parâmetros nomeados, eliminando qualquer risco de SQL Injection.
 
 ```
 Cliente HTTP (Swagger / Frontend / Postman)
@@ -75,9 +75,34 @@ CodeTicket/src/backend/
 ├── Properties/
 │   └── launchSettings.json
 ├── appsettings.json
-├── appsettings.Development.json    # Connection string (não versionar em produção)
+├── appsettings.Development.json    # Connection string local
 ├── Program.cs                      # Ponto de entrada, DI e roteamento
 └── CodeTicket.API.csproj
+```
+---
+
+```
+CodeTicket/src/frontend/
+├── Layout/
+│   └── MainLayout.razor            # Layout principal com menu e tema
+├── Models/
+│   └── Models.cs                   # Modelos de entrada e saída do frontend
+├── Pages/
+│   ├── Home.razor                  # Página inicial
+│   ├── Eventos.razor               # Cadastro e listagem de eventos
+│   ├── Usuarios.razor              # Cadastro de usuários
+│   ├── Cupons.razor                # Cadastro de cupons
+│   └── NotFound.razor              # Página 404
+├── Services/
+│   └── ApiService.cs               # Comunicação HTTP com o backend
+├── wwwroot/
+│   ├── css/                        # Estilos globais
+│   ├── index.html                  # Entry point do Blazor WASM
+│   └── _redirects                  # Redirecionamento para o Netlify
+├── App.razor
+├── _Imports.razor
+├── Program.cs                      # Configuração do Blazor WASM
+└── CodeTicket.Frontend.csproj
 ```
 
 ---
@@ -98,7 +123,7 @@ Camada onde vivem todas as validações e decisões do sistema. Cada service:
 - Consulta o repositório para verificar duplicatas ou existência de registros
 - Retorna uma tupla `(bool sucesso, string mensagem)` para o endpoint
 
-Exemplos de regras aplicadas:
+### Exemplos de regras aplicadas:
 - CPF deve ter exatamente 11 dígitos numéricos
 - E-mail deve ter formato válido (validado por Regex)
 - Data do evento não pode ser no passado
@@ -209,7 +234,7 @@ Exemplo: `POST /api/usuarios`
 ## Decisões Técnicas
 
 ### Por que Minimal API e não Controllers?
-A Minimal API do .NET 8 é mais enxuta, com menos boilerplate, ideal para APIs pequenas e focadas. O roteamento fica explícito no `Program.cs`, facilitando a leitura e auditoria das rotas.
+A Minimal API do .NET 10 é mais enxuta, com menos boilerplate, ideal para APIs pequenas e focadas. O roteamento fica explícito no `Program.cs`, facilitando a leitura e auditoria das rotas.
 
 ### Por que Dapper e não Entity Framework?
 O Dapper é um micro-ORM que executa SQL puro, dando controle total sobre as queries. Isso garante:

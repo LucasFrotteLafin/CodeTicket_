@@ -1,6 +1,6 @@
 # CodeTicket
 
-Backend do sistema de venda de ingressos **CodeTicket**, construído com **.NET 8 Minimal API**, **Dapper** e **PostgreSQL**.
+Backend do sistema de venda de ingressos **CodeTicket**, construído com **.NET 10 Minimal API**, **Dapper** e **PostgreSQL**.
 
 O sistema foi projetado para ser rápido, seguro contra SQL Injection e rigoroso na aplicação das regras de negócio — garantindo que nenhum ingresso seja vendido além da capacidade, que cambistas sejam bloqueados por CPF e que cupons de desconto não gerem valores negativos.
 
@@ -10,8 +10,8 @@ O sistema foi projetado para ser rápido, seguro contra SQL Injection e rigoroso
 
 | Serviço | Plataforma | URL |
 |---------|------------|-----|
-| Backend (API) | Railway | configurar após deploy |
-| Frontend (Blazor) | Railway | configurar após deploy |
+| Backend (API) | Railway | https://codeticket-production.up.railway.app/ |
+| Frontend (Blazor) | Netlify | https://appcodeticket.netlify.app/ |
 | Banco de Dados | Railway PostgreSQL | gerenciado pelo Railway |
 
 ---
@@ -20,7 +20,7 @@ O sistema foi projetado para ser rápido, seguro contra SQL Injection e rigoroso
 
 Antes de rodar o projeto, certifique-se de ter instalado:
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [PostgreSQL 14+](https://www.postgresql.org/download/)
 - [Git](https://git-scm.com/)
 
@@ -96,9 +96,8 @@ A API estará disponível em:
 
 | Ambiente | URL |
 |----------|-----|
-| HTTP     | `http://localhost:5007` |
-| HTTPS    | `https://localhost:7050` |
-| Swagger  | `http://localhost:5007` (abre automaticamente) |
+| HTTP    | `http://localhost:5007` |
+| Swagger | `http://localhost:5007` (abre automaticamente) |
 
 ---
 
@@ -197,8 +196,8 @@ Cadastra um novo cupom de desconto. Retorna `400` se o código já existir ou os
 
 | Tecnologia | Versão | Função |
 |------------|--------|--------|
-| .NET | 8.0 | Plataforma da API |
-| ASP.NET Core Minimal API | 8.0 | Framework HTTP |
+| .NET | 10.0 | Plataforma da API |
+| ASP.NET Core Minimal API | 10.0 | Framework HTTP |
 | Dapper | 2.1.72 | Micro-ORM para acesso ao banco |
 | Npgsql | 8.0.5 | Driver PostgreSQL para .NET |
 | Swashbuckle (Swagger) | 6.9.0 | Documentação interativa da API |
