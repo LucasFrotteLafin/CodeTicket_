@@ -14,4 +14,4 @@ obj/
 # appsettings.Development.json
 
 # Build do frontend
-# src/frontend/publish/
+src/frontend/publish/
