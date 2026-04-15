@@ -160,15 +160,7 @@
         }
 
         _carregando = true;
-        var payload = new CriarEventoModel
-        {
-            Nome = _model.Nome,
-            CapacidadeTotal = _model.CapacidadeTotal,
-            DataEvento = _model.DataEvento,
-            PrecoPadrao = _model.PrecoPadrao
-        };
-
-        var (sucesso, mensagem) = await Api.CriarEvento(payload);
+        var (sucesso, mensagem) = await Api.CriarEvento(_model);
 
         if (sucesso)
         {
