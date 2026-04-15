@@ -1,10 +1,11 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "buildCommand": "cd src/backend && dotnet publish -c Release -o /app"
   },
   "deploy": {
-    "startCommand": "cd src/backend && dotnet run --no-launch-profile",
+    "startCommand": "dotnet /app/CodeTicket.API.dll",
     "restartPolicyType": "ON_FAILURE"
   }
 }
