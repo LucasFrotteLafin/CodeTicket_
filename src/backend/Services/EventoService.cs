@@ -4,7 +4,7 @@ using CodeTicket.API.Repositories;
 
 namespace CodeTicket.API.Services;
 
-public class EventoService(IEventoRepository repository)
+public class EventoService(IEventoRepository repository, IUsuarioRepository usuarioRepository)
 {
     public async Task<(bool sucesso, string mensagem)> CriarEvento(CriarEventoDto dto)
     {
@@ -23,12 +23,23 @@ public class EventoService(IEventoRepository repository)
         if (dto.PrecoPadrao <= 0)
             return (false, "O preço do evento deve ser maior que zero.");
 
+        if (string.IsNullOrWhiteSpace(dto.UsuarioCpf))
+            return (false, "O CPF do usuário é obrigatório.");
+
+        var usuario = await usuarioRepository.BuscarPorCpf(dto.UsuarioCpf);
+        if (usuario is null)
+            return (false, "Usuário não encontrado.");
+
         await repository.Criar(new Evento
         {
             Nome = dto.Nome,
             CapacidadeTotal = dto.CapacidadeTotal,
             DataEvento = dto.DataEvento,
-            PrecoPadrao = dto.PrecoPadrao
+            PrecoPadrao = dto.PrecoPadrao,
+            UsuarioCpf = dto.UsuarioCpf,
+            Descricao = dto.Descricao,
+            Local = dto.Local,
+            ImagemUrl = dto.ImagemUrl
         });
 
         return (true, "Evento criado com sucesso!");

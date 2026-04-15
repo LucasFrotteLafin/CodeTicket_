@@ -1,4 +1,5 @@
 @page "/"
+@inject ApiService Api
 
 <PageTitle>CodeTicket — Início</PageTitle>
 
@@ -16,7 +17,7 @@
                     <MudText Typo="Typo.h6" Class="fw-bold">Eventos</MudText>
                 </div>
                 <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                    Cadastre shows, festivais e eventos com capacidade, data e preço. O sistema garante que nenhum ingresso seja vendido além do limite.
+                    Cadastre shows, festivais e eventos com capacidade, data e preço.
                 </MudText>
             </MudCardContent>
             <MudCardActions>
@@ -35,7 +36,7 @@
                     <MudText Typo="Typo.h6" Class="fw-bold">Usuários</MudText>
                 </div>
                 <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                    Cadastre usuários com CPF único. O sistema bloqueia automaticamente cambistas que tentam se registrar com o mesmo CPF.
+                    Cadastre usuários com CPF único. O sistema bloqueia cambistas automaticamente.
                 </MudText>
             </MudCardContent>
             <MudCardActions>
@@ -54,7 +55,7 @@
                     <MudText Typo="Typo.h6" Class="fw-bold">Cupons</MudText>
                 </div>
                 <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                    Crie cupons de desconto com percentual e valor mínimo. O sistema impede que descontos gerem valores negativos.
+                    Crie cupons de desconto com percentual e valor mínimo.
                 </MudText>
             </MudCardContent>
             <MudCardActions>
@@ -68,50 +69,159 @@
 
 <MudDivider Class="my-8" />
 
-<MudText Typo="Typo.h6" Class="mb-4 fw-bold">Por que o CodeTicket é seguro?</MudText>
-<MudGrid Spacing="3">
-    <MudItem xs="12" sm="6">
-        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
-            <div class="d-flex align-center mb-2">
-                <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Success" Class="mr-2" />
-                <MudText Typo="Typo.subtitle2" Class="fw-bold">Proteção contra SQL Injection</MudText>
-            </div>
-            <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                Todas as queries usam parâmetros nomeados via Dapper. Nenhum dado do usuário é concatenado diretamente no SQL.
-            </MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
-            <div class="d-flex align-center mb-2">
-                <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error" Class="mr-2" />
-                <MudText Typo="Typo.subtitle2" Class="fw-bold">Bloqueio de Cambistas</MudText>
-            </div>
-            <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                O CPF é a chave primária da tabela de usuários. Tentativas de cadastro duplicado são rejeitadas com erro 400.
-            </MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
-            <div class="d-flex align-center mb-2">
-                <MudIcon Icon="@Icons.Material.Filled.EventBusy" Color="Color.Warning" Class="mr-2" />
-                <MudText Typo="Typo.subtitle2" Class="fw-bold">Controle de Capacidade</MudText>
-            </div>
-            <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                Eventos têm capacidade máxima definida. O sistema impede a venda de ingressos além do limite cadastrado.
-            </MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudPaper Elevation="1" Class="pa-4 rounded-lg">
-            <div class="d-flex align-center mb-2">
-                <MudIcon Icon="@Icons.Material.Filled.AttachMoney" Color="Color.Info" Class="mr-2" />
-                <MudText Typo="Typo.subtitle2" Class="fw-bold">Cupons sem Fraude</MudText>
-            </div>
-            <MudText Typo="Typo.body2" Class="mud-text-secondary">
-                Cupons têm valor mínimo de aplicação e percentual limitado a 100%. Descontos que gerariam valores negativos são bloqueados.
-            </MudText>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+<MudText Typo="Typo.h5" Class="mb-6 fw-bold">Próximos Eventos 🎪</MudText>
+
+@if (_carregando)
+{
+    <div class="d-flex justify-center pa-6">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    </div>
+}
+else if (_eventos.Count == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+        Nenhum evento cadastrado ainda.
+    </MudAlert>
+}
+else
+{
+    <MudGrid Spacing="4">
+        @foreach (var evento in _eventos)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <div class="evento-card" @onclick="() => AbrirEvento(evento)">
+                    <MudCard Elevation="4" Class="rounded-lg evento-card-inner">
+                        @if (!string.IsNullOrWhiteSpace(evento.ImagemUrl))
+                        {
+                            <MudCardMedia Image="@evento.ImagemUrl" Height="180" />
+                        }
+                        else
+                        {
+                            <div class="evento-sem-imagem d-flex align-center justify-center" style="height:180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <MudIcon Icon="@Icons.Material.Filled.Event" Style="font-size:4rem; color:white;" />
+                            </div>
+                        }
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6" Class="fw-bold mb-1">@evento.Nome</MudText>
+                            <div class="d-flex align-center mb-1">
+                                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Class="mr-1 mud-text-secondary" />
+                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@evento.DataEvento.ToString("dd/MM/yyyy")</MudText>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(evento.Local))
+                            {
+                                <div class="d-flex align-center">
+                                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Class="mr-1 mud-text-secondary" />
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@evento.Local</MudText>
+                                </div>
+                            }
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudText Typo="Typo.subtitle2" Class="ml-2 fw-bold" Color="Color.Primary">
+                                R$ @evento.PrecoPadrao.ToString("F2")
+                            </MudText>
+                        </MudCardActions>
+                    </MudCard>
+                </div>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@if (_eventoSelecionado is not null)
+{
+    <div class="evento-overlay" @onclick="FecharEvento">
+        <div class="evento-modal" @onclick:stopPropagation="true">
+            <MudCard Elevation="8" Class="rounded-lg" Style="max-width:600px; width:100%;">
+                @if (!string.IsNullOrWhiteSpace(_eventoSelecionado.ImagemUrl))
+                {
+                    <MudCardMedia Image="@_eventoSelecionado.ImagemUrl" Height="250" />
+                }
+                <MudCardContent>
+                    <MudText Typo="Typo.h5" Class="fw-bold mb-3">@_eventoSelecionado.Nome</MudText>
+
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="mr-2" Color="Color.Primary" />
+                        <MudText Typo="Typo.body1">@_eventoSelecionado.DataEvento.ToString("dd/MM/yyyy")</MudText>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(_eventoSelecionado.Local))
+                    {
+                        <div class="d-flex align-center mb-2">
+                            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Class="mr-2" Color="Color.Primary" />
+                            <MudText Typo="Typo.body1">@_eventoSelecionado.Local</MudText>
+                        </div>
+                    }
+
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.People" Class="mr-2" Color="Color.Primary" />
+                        <MudText Typo="Typo.body1">@_eventoSelecionado.CapacidadeTotal vagas</MudText>
+                    </div>
+
+                    <div class="d-flex align-center mb-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Person" Class="mr-2" Color="Color.Primary" />
+                        <MudText Typo="Typo.body1">Criado por @_eventoSelecionado.NomeUsuario</MudText>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(_eventoSelecionado.Descricao))
+                    {
+                        <MudDivider Class="my-3" />
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@_eventoSelecionado.Descricao</MudText>
+                    }
+
+                    <MudDivider Class="my-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold" Color="Color.Primary">
+                        R$ @_eventoSelecionado.PrecoPadrao.ToString("F2")
+                    </MudText>
+                </MudCardContent>
+                <MudCardActions Class="px-4 pb-4 d-flex justify-space-between">
+                    <MudButton Variant="Variant.Text" OnClick="FecharEvento">Fechar</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart">
+                        Comprar
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </div>
+    </div>
+}
+
+<style>
+    .evento-card {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .evento-card:hover .evento-card-inner {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
+    }
+    .evento-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    .evento-modal {
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+</style>
+
+@code {
+    private List<EventoListarModel> _eventos = [];
+    private EventoListarModel? _eventoSelecionado;
+    private bool _carregando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _eventos = await Api.ListarEventos();
+        _carregando = false;
+    }
+
+    private void AbrirEvento(EventoListarModel evento) => _eventoSelecionado = evento;
+    private void FecharEvento() => _eventoSelecionado = null;
+}

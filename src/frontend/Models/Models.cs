@@ -13,6 +13,10 @@ public class CriarEventoModel
     public int CapacidadeTotal { get; set; }
     public DateTime? DataEvento { get; set; }
     public decimal PrecoPadrao { get; set; }
+    public string UsuarioCpf { get; set; } = "";
+    public string? Descricao { get; set; }
+    public string? Local { get; set; }
+    public string? ImagemUrl { get; set; }
 }
 
 public class CriarCupomModel
@@ -26,4 +30,11 @@ public class EventoListarModel
 {
     public int Id { get; set; }
     public string Nome { get; set; } = "";
+    public string NomeUsuario { get; set; } = "";
+    public DateTime DataEvento { get; set; }
+    public decimal PrecoPadrao { get; set; }
+    public int CapacidadeTotal { get; set; }
+    public string? Descricao { get; set; }
+    public string? Local { get; set; }
+    public string? ImagemUrl { get; set; }
 }

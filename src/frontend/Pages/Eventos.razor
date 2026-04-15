@@ -6,13 +6,11 @@
 
 <MudText Typo="Typo.h4" Class="mb-1 fw-bold">Eventos 🎪</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-6 mud-text-secondary">
-    Cadastre e visualize os eventos disponíveis no sistema.
+    Cadastre novos eventos no sistema.
 </MudText>
 
-<MudGrid Spacing="4">
-
-    @* Formulário *@
-    <MudItem xs="12" md="5">
+<MudGrid Spacing="4" Justify="Justify.Center">
+    <MudItem xs="12" sm="10" md="7" lg="6">
         <MudCard Elevation="3" Class="rounded-lg">
             <MudCardHeader>
                 <CardHeaderContent>
@@ -28,6 +26,36 @@
                               Variant="Variant.Outlined"
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.MusicNote"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.UsuarioCpf"
+                              Label="CPF do Usuário"
+                              HelperText="Somente números, 11 dígitos"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Badge"
+                              MaxLength="11"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.Local"
+                              Label="Local"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.LocationOn"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.Descricao"
+                              Label="Descrição"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              Class="mb-3" />
+
+                <MudTextField @bind-Value="_model.ImagemUrl"
+                              Label="URL da Imagem"
+                              HelperText="Link direto para uma imagem (jpg, png...)"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Image"
                               Class="mb-3" />
 
                 <MudNumericField @bind-Value="_model.CapacidadeTotal"
@@ -74,83 +102,22 @@
             </MudCardActions>
         </MudCard>
     </MudItem>
-
-    @* Listagem *@
-    <MudItem xs="12" md="7">
-        <MudCard Elevation="3" Class="rounded-lg">
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <div class="d-flex align-center justify-space-between">
-                        <div class="d-flex align-center">
-                            <MudIcon Icon="@Icons.Material.Filled.List" Color="Color.Primary" Class="mr-2" />
-                            <MudText Typo="Typo.h6" Class="fw-bold">Eventos Cadastrados</MudText>
-                        </div>
-                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">@_eventos.Count evento(s)</MudChip>
-                    </div>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                @if (_carregandoLista)
-                {
-                    <div class="d-flex justify-center pa-6">
-                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                    </div>
-                }
-                else if (_eventos.Count == 0)
-                {
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
-                        Nenhum evento cadastrado ainda. Crie o primeiro!
-                    </MudAlert>
-                }
-                else
-                {
-                    <MudTable Items="_eventos" Hover="true" Striped="true" Dense="true" Elevation="0">
-                        <HeaderContent>
-                            <MudTh>#</MudTh>
-                            <MudTh>Nome do Evento</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd>
-                                <MudChip T="string" Size="Size.Small" Color="Color.Default">@context.Id</MudChip>
-                            </MudTd>
-                            <MudTd>
-                                <div class="d-flex align-center">
-                                    <MudIcon Icon="@Icons.Material.Filled.Event" Size="Size.Small" Class="mr-2 mud-text-secondary" />
-                                    @context.Nome
-                                </div>
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
-                }
-            </MudCardContent>
-        </MudCard>
-    </MudItem>
-
 </MudGrid>
 
 @code {
     private CriarEventoModel _model = new();
-    private List<EventoListarModel> _eventos = [];
     private bool _carregando = false;
-    private bool _carregandoLista = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CarregarEventos();
-    }
-
-    private async Task CarregarEventos()
-    {
-        _carregandoLista = true;
-        _eventos = await Api.ListarEventos();
-        _carregandoLista = false;
-    }
 
     private async Task Cadastrar()
     {
         if (string.IsNullOrWhiteSpace(_model.Nome))
         {
             Snackbar.Add("Informe o nome do evento.", Severity.Warning);
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_model.UsuarioCpf))
+        {
+            Snackbar.Add("Informe o CPF do usuário.", Severity.Warning);
             return;
         }
         if (_model.DataEvento == null)
@@ -166,7 +133,6 @@
         {
             Snackbar.Add(mensagem, Severity.Success);
             _model = new();
-            await CarregarEventos();
         }
         else
         {

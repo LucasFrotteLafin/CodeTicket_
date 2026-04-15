@@ -9,7 +9,12 @@ CREATE TABLE eventos (
     nome VARCHAR(150) NOT NULL,
     capacidadetotal INT NOT NULL,
     dataevento TIMESTAMP NOT NULL,
-    precopadrao DECIMAL(10,2) NOT NULL
+    precopadrao DECIMAL(10,2) NOT NULL,
+    usuariocpf VARCHAR(14) NOT NULL,
+    descricao TEXT NULL,
+    local VARCHAR(200) NULL,
+    imagemurl TEXT NULL,
+    CONSTRAINT fk_eventos_usuarios FOREIGN KEY (usuariocpf) REFERENCES usuarios(cpf)
 );
 
 CREATE TABLE cupons (
