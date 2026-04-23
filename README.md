@@ -204,3 +204,15 @@ Cadastra um novo cupom de desconto. Retorna `400` se o código já existir ou os
 | xUnit | 2.5.3 | Framework de testes |
 | NSubstitute | 5.1.0 | Mocking para testes unitários |
 | PostgreSQL | 14+ | Banco de dados relacional |
+
+---
+
+**Colaboradores**
+
+| Alunos | Matricula |
+|--------|-----------|
+| Lucas Frotte Lafin | 06010493 |
+| Ana Luiza Maciel Mattos | 06009322 |
+| Ana Carolina Tomas | 06010096 |
+| Alexandre dos Santos | 06010479 |
+| Gabriel Duarte de Oliveira | 06010804 |
