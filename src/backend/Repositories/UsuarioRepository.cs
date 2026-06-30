@@ -9,7 +9,7 @@ public class UsuarioRepository(DbConnectionFactory factory) : IUsuarioRepository
     {
         using var db = factory.CreateConnection();
         return await db.QueryFirstOrDefaultAsync<Usuario>(
-            "SELECT * FROM Usuarios WHERE Cpf = @Cpf",
+            "SELECT * FROM usuarios WHERE cpf = @Cpf",
             new { Cpf = cpf }
         );
     }
@@ -20,15 +20,6 @@ public class UsuarioRepository(DbConnectionFactory factory) : IUsuarioRepository
         await db.ExecuteAsync(
             "INSERT INTO Usuarios (Cpf, Nome, Email) VALUES (@Cpf, @Nome, @Email)",
             usuario
-        );
-    }
-
-    public async Task<Usuario?> ObterPorCpf(string cpf)
-    {
-        using var db = factory.CreateConnection();
-        return await db.QueryFirstOrDefaultAsync<Usuario>(
-            "SELECT * FROM usuarios WHERE cpf = @Cpf",
-            new { Cpf = cpf }
         );
     }
 }

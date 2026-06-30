@@ -18,7 +18,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns((Usuario?)null);
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns((Usuario?)null);
         
         var service = new ReservaService(reservaRepo, eventoRepo, cupomRepo, usuarioRepo);
         var dto = new ComprarIngressoDto 
@@ -44,7 +44,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns((Evento?)null);
         
         var service = new ReservaService(reservaRepo, eventoRepo, cupomRepo, usuarioRepo);
@@ -71,7 +71,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -102,7 +102,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -136,7 +136,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -171,7 +171,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -208,7 +208,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -250,7 +250,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         eventoRepo.ObterPorId(Arg.Any<int>()).Returns(new Evento 
         { 
             Id = 1, 
@@ -307,7 +307,7 @@ public class ReservaTests
         var cupomRepo = Substitute.For<ICupomRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         
-        usuarioRepo.ObterPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
+        usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
         reservaRepo.ListarIngressosUsuario(Arg.Any<string>()).Returns(new List<IngressoDetalheDto>
         {
             new IngressoDetalheDto { ReservaId = 1, EventoNome = "Show" }

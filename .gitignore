@@ -11,7 +11,7 @@ obj/
 .gitattributes
 
 # Senhas e configurações locais
-appsettings.Development.json
+# appsettings.Development.json
 
 # Build do frontend
 src/frontend/publish/

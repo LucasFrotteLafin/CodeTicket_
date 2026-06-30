@@ -10,9 +10,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(builder.HostEnvironment.IsProduction()
-        ? "https://codeticket-api.onrender.com"
-        : "http://localhost:5007")
+    BaseAddress = new Uri("http://localhost:5007")
 });
 
 builder.Services.AddScoped<ApiService>();

@@ -25,7 +25,7 @@ public class ReservaService
     public async Task<(bool Sucesso, string Mensagem, int? ReservaId)> ComprarIngresso(ComprarIngressoDto dto)
     {
         // VALIDAÇÃO 1: Verificar se o usuário existe
-        var usuario = await _usuarioRepo.ObterPorCpf(dto.UsuarioCpf);
+        var usuario = await _usuarioRepo.BuscarPorCpf(dto.UsuarioCpf);
         if (usuario == null)
         {
             return (false, "Usuário não encontrado. Cadastre-se antes de comprar ingressos.", null);
@@ -107,7 +107,7 @@ public class ReservaService
         }
 
         // Verificar se o usuário existe
-        var usuario = await _usuarioRepo.ObterPorCpf(cpf);
+        var usuario = await _usuarioRepo.BuscarPorCpf(cpf);
         if (usuario == null)
         {
             return (false, "Usuário não encontrado.", null);
