@@ -285,6 +285,5 @@ WHERE r.usuariocpf = @Cpf
 |--------|-----------|
 | Lucas Frotte Lafin | 06010493 |
 | Ana Luiza Maciel Mattos | 06009322 |
-| Ana Carolina Tomas | 06010096 |
 | Alexandre dos Santos | 06010479 |
 | Gabriel Duarte de Oliveira | 06010804 |
