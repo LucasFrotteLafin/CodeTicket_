@@ -38,3 +38,30 @@ public class EventoListarModel
     public string? Local { get; set; }
     public string? ImagemUrl { get; set; }
 }
+
+public class ComprarIngressoModel
+{
+    public string UsuarioCpf { get; set; } = "";
+    public int EventoId { get; set; }
+    public string? CupomCodigo { get; set; }
+}
+
+public class IngressoDetalheModel
+{
+    public int ReservaId { get; set; }
+    public string UsuarioNome { get; set; } = "";
+    public string UsuarioCpf { get; set; } = "";
+    public string EventoNome { get; set; } = "";
+    public DateTime DataEvento { get; set; }
+    public string? LocalEvento { get; set; }
+    public decimal PrecoPadrao { get; set; }
+    public string? CupomUtilizado { get; set; }
+    public decimal? DescontoAplicado { get; set; }
+    public decimal ValorFinalPago { get; set; }
+}
+
+public class ListarIngressosResponse
+{
+    public string Mensagem { get; set; } = "";
+    public List<IngressoDetalheModel> Ingressos { get; set; } = new();
+}

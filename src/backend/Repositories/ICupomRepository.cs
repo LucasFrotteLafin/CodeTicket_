@@ -6,4 +6,5 @@ public interface ICupomRepository
 {
     Task<bool> ExisteCupom(string codigo);
     Task InserirCupom(Cupom cupom);
+    Task<Cupom?> ObterPorCodigo(string codigo);
 }

@@ -1,0 +1,142 @@
+@page "/comprar-ingresso"
+@inject ApiService Api
+@using CodeTicket.Frontend.Services
+@using CodeTicket.Frontend.Models
+
+<PageTitle>Comprar Ingresso - CodeTicket</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">🎫 Comprar Ingresso</h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(mensagem))
+                    {
+                        <div class="alert @(sucesso ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+                            @mensagem
+                            <button type="button" class="btn-close" @onclick="() => mensagem = string.Empty"></button>
+                        </div>
+                    }
+
+                    <EditForm Model="@model" OnValidSubmit="RealizarCompra">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">CPF do Comprador</label>
+                            <InputText @bind-Value="model.UsuarioCpf" class="form-control" placeholder="12345678901" maxlength="11" />
+                            <small class="text-muted">Digite apenas números (11 dígitos)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Evento</label>
+                            @if (carregandoEventos)
+                            {
+                                <p class="text-muted">Carregando eventos...</p>
+                            }
+                            else if (eventos.Count == 0)
+                            {
+                                <p class="text-danger">Nenhum evento disponível. Cadastre eventos primeiro.</p>
+                            }
+                            else
+                            {
+                                <select @bind="model.EventoId" class="form-select">
+                                    <option value="0">Selecione um evento</option>
+                                    @foreach (var evento in eventos)
+                                    {
+                                        <option value="@evento.Id">
+                                            @evento.Nome - @evento.DataEvento.ToString("dd/MM/yyyy HH:mm") - R$ @evento.PrecoPadrao.ToString("F2")
+                                        </option>
+                                    }
+                                </select>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Cupom de Desconto (Opcional)</label>
+                            <InputText @bind-Value="model.CupomCodigo" class="form-control" placeholder="Ex: VERAO25" />
+                            <small class="text-muted">Deixe em branco se não tiver cupom</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" disabled="@processando">
+                                @if (processando)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    <span>Processando...</span>
+                                }
+                                else
+                                {
+                                    <span>🎟️ Comprar Ingresso</span>
+                                }
+                            </button>
+                            <a href="/meus-ingressos" class="btn btn-outline-secondary">Ver Meus Ingressos</a>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h5>ℹ️ Informações Importantes:</h5>
+                <ul class="text-muted">
+                    <li>Cada CPF pode comprar apenas 1 ingresso por evento</li>
+                    <li>Cupons de desconto possuem valor mínimo para utilização</li>
+                    <li>Não é possível comprar ingressos para eventos que já ocorreram</li>
+                    <li>Verifique a disponibilidade antes de finalizar a compra</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ComprarIngressoModel model = new();
+    private List<EventoListarModel> eventos = new();
+    private string mensagem = string.Empty;
+    private bool sucesso = false;
+    private bool processando = false;
+    private bool carregandoEventos = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarEventos();
+    }
+
+    private async Task CarregarEventos()
+    {
+        carregandoEventos = true;
+        eventos = await Api.ListarEventos();
+        carregandoEventos = false;
+    }
+
+    private async Task RealizarCompra()
+    {
+        if (string.IsNullOrWhiteSpace(model.UsuarioCpf))
+        {
+            mensagem = "Por favor, informe o CPF.";
+            sucesso = false;
+            return;
+        }
+
+        if (model.EventoId == 0)
+        {
+            mensagem = "Por favor, selecione um evento.";
+            sucesso = false;
+            return;
+        }
+
+        processando = true;
+        mensagem = string.Empty;
+
+        var (suc, msg, reservaId) = await Api.ComprarIngresso(model);
+        
+        sucesso = suc;
+        mensagem = msg;
+        processando = false;
+
+        if (sucesso)
+        {
+            model = new ComprarIngressoModel();
+        }
+    }
+}

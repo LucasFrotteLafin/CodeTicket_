@@ -20,6 +20,8 @@ builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<EventoService>();
 builder.Services.AddScoped<ICupomRepository, CupomRepository>();
 builder.Services.AddScoped<CupomService>();
+builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddScoped<ReservaService>();
 
 builder.Services.AddCors(options =>
 {
@@ -71,6 +73,32 @@ app.MapGet("/api/eventos", async (EventoService service) =>
 {
     var eventos = await service.ListarEventos();
     return Results.Ok(eventos);
+});
+
+// COMPRAR INGRESSO - Endpoint com múltiplas validações de negócio
+app.MapPost("/api/ingressos/comprar", async (ComprarIngressoDto dto, ReservaService service) =>
+{
+    var (sucesso, mensagem, reservaId) = await service.ComprarIngresso(dto);
+    
+    if (sucesso)
+    {
+        return Results.Ok(new { mensagem, reservaId });
+    }
+    
+    return Results.BadRequest(new { mensagem });
+});
+
+// LISTAR MEUS INGRESSOS - Endpoint com JOIN entre reservas, usuarios e eventos
+app.MapGet("/api/ingressos/meus/{cpf}", async (string cpf, ReservaService service) =>
+{
+    var (sucesso, mensagem, ingressos) = await service.ListarMeusIngressos(cpf);
+    
+    if (sucesso)
+    {
+        return Results.Ok(new { mensagem, ingressos });
+    }
+    
+    return Results.BadRequest(new { mensagem });
 });
 
 app.Run();

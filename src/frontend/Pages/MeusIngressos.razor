@@ -1,0 +1,171 @@
+@page "/meus-ingressos"
+@inject ApiService Api
+@using CodeTicket.Frontend.Services
+@using CodeTicket.Frontend.Models
+
+<PageTitle>Meus Ingressos - CodeTicket</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">🎟️ Meus Ingressos</h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(mensagemErro))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @mensagemErro
+                            <button type="button" class="btn-close" @onclick="() => mensagemErro = string.Empty"></button>
+                        </div>
+                    }
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Digite seu CPF para consultar</label>
+                        <div class="input-group">
+                            <input type="text" @bind="cpfConsulta" class="form-control" placeholder="12345678901" maxlength="11" @onkeypress="OnKeyPress" />
+                            <button class="btn btn-primary" @onclick="ConsultarIngressos" disabled="@carregando">
+                                @if (carregando)
+                                {
+                                    <span class="spinner-border spinner-border-sm"></span>
+                                }
+                                else
+                                {
+                                    <span>🔍 Consultar</span>
+                                }
+                            </button>
+                        </div>
+                        <small class="text-muted">Digite apenas números (11 dígitos)</small>
+                    </div>
+
+                    @if (consultaRealizada)
+                    {
+                        @if (ingressos == null || ingressos.Count == 0)
+                        {
+                            <div class="alert alert-info">
+                                <strong>ℹ️ Nenhum ingresso encontrado</strong>
+                                <p class="mb-0 mt-2">Você ainda não comprou ingressos com este CPF.</p>
+                                <a href="/comprar-ingresso" class="btn btn-sm btn-primary mt-2">Comprar Ingresso</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success mb-4">
+                                <strong>✅ @mensagemSucesso</strong>
+                            </div>
+
+                            <div class="row">
+                                @foreach (var ingresso in ingressos)
+                                {
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">🎫 @ingresso.EventoNome</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p><strong>👤 Comprador:</strong> @ingresso.UsuarioNome</p>
+                                                <p><strong>📅 Data do Evento:</strong> @ingresso.DataEvento.ToString("dd/MM/yyyy HH:mm")</p>
+                                                
+                                                @if (!string.IsNullOrEmpty(ingresso.LocalEvento))
+                                                {
+                                                    <p><strong>📍 Local:</strong> @ingresso.LocalEvento</p>
+                                                }
+
+                                                <hr />
+
+                                                <div class="d-flex justify-content-between">
+                                                    <span><strong>Preço Original:</strong></span>
+                                                    <span>R$ @ingresso.PrecoPadrao.ToString("F2")</span>
+                                                </div>
+
+                                                @if (!string.IsNullOrEmpty(ingresso.CupomUtilizado))
+                                                {
+                                                    <div class="d-flex justify-content-between text-success">
+                                                        <span><strong>Cupom (@ingresso.CupomUtilizado):</strong></span>
+                                                        <span>- R$ @ingresso.DescontoAplicado?.ToString("F2")</span>
+                                                    </div>
+                                                }
+
+                                                <div class="d-flex justify-content-between mt-2 pt-2 border-top">
+                                                    <span><strong>Valor Pago:</strong></span>
+                                                    <span class="text-success fw-bold fs-5">R$ @ingresso.ValorFinalPago.ToString("F2")</span>
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <small class="text-muted">Reserva #@ingresso.ReservaId</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="/comprar-ingresso" class="btn btn-primary btn-lg">
+                    🎟️ Comprar Mais Ingressos
+                </a>
+                <a href="/" class="btn btn-outline-secondary btn-lg ms-2">
+                    🏠 Voltar ao Início
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string cpfConsulta = string.Empty;
+    private List<IngressoDetalheModel>? ingressos;
+    private string mensagemErro = string.Empty;
+    private string mensagemSucesso = string.Empty;
+    private bool carregando = false;
+    private bool consultaRealizada = false;
+
+    private async Task ConsultarIngressos()
+    {
+        if (string.IsNullOrWhiteSpace(cpfConsulta))
+        {
+            mensagemErro = "Por favor, informe o CPF.";
+            return;
+        }
+
+        if (cpfConsulta.Length != 11)
+        {
+            mensagemErro = "CPF deve ter 11 dígitos.";
+            return;
+        }
+
+        carregando = true;
+        mensagemErro = string.Empty;
+        mensagemSucesso = string.Empty;
+        consultaRealizada = false;
+
+        var (sucesso, mensagem, ingressosRetornados) = await Api.ListarMeusIngressos(cpfConsulta);
+
+        carregando = false;
+        consultaRealizada = true;
+
+        if (sucesso)
+        {
+            ingressos = ingressosRetornados ?? new List<IngressoDetalheModel>();
+            mensagemSucesso = mensagem;
+        }
+        else
+        {
+            mensagemErro = mensagem;
+            ingressos = null;
+        }
+    }
+
+    private async Task OnKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await ConsultarIngressos();
+        }
+    }
+}

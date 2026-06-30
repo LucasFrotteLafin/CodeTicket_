@@ -23,4 +23,13 @@ public class CupomRepository(DbConnectionFactory factory) : ICupomRepository
             cupom
         );
     }
+
+    public async Task<Cupom?> ObterPorCodigo(string codigo)
+    {
+        using var db = factory.CreateConnection();
+        return await db.QueryFirstOrDefaultAsync<Cupom>(
+            "SELECT * FROM cupons WHERE codigo = @Codigo",
+            new { Codigo = codigo }
+        );
+    }
 }

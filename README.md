@@ -192,6 +192,78 @@ Cadastra um novo cupom de desconto. Retorna `400` se o código já existir ou os
 
 ---
 
+### POST /api/ingressos/comprar ⭐ NOVO
+Compra um ingresso para um evento com múltiplas validações de negócio.
+
+**Body:**
+```json
+{
+  "usuarioCpf": "12345678901",
+  "eventoId": 1,
+  "cupomCodigo": "VERAO25"
+}
+```
+
+**Validações Aplicadas:**
+- ✅ Verifica se usuário existe
+- ✅ Verifica se evento existe
+- ✅ Bloqueia compra para eventos no passado
+- ✅ Impede venda além da capacidade (overselling)
+- ✅ Bloqueia cambistas (1 ingresso por CPF)
+- ✅ Valida existência de cupom
+- ✅ Verifica valor mínimo para usar cupom
+- ✅ Garante que valor final não seja negativo
+
+**Respostas:**
+| Status | Descrição |
+|--------|-----------|
+| 200    | Ingresso comprado com sucesso + valor pago |
+| 400    | Erro em qualquer validação (mensagem específica) |
+
+---
+
+### GET /api/ingressos/meus/{cpf} ⭐ NOVO
+Lista todos os ingressos comprados por um usuário (com JOIN entre tabelas).
+
+**Parâmetros:**
+- `cpf`: CPF do usuário (11 dígitos)
+
+**Resposta:**
+```json
+{
+  "mensagem": "2 ingresso(s) encontrado(s).",
+  "ingressos": [
+    {
+      "reservaId": 1,
+      "usuarioNome": "Lucas Frotte",
+      "usuarioCpf": "12345678901",
+      "eventoNome": "Festival de Verão 2025",
+      "dataEvento": "2025-12-20T20:00:00",
+      "localEvento": "Praia de Copacabana",
+      "precoPadrao": 250.00,
+      "cupomUtilizado": "VERAO25",
+      "descontoAplicado": 62.50,
+      "valorFinalPago": 187.50
+    }
+  ]
+}
+```
+
+**Query SQL (com JOIN):**
+```sql
+SELECT 
+    r.id AS ReservaId,
+    u.nome AS UsuarioNome,
+    e.nome AS EventoNome,
+    e.dataevento AS DataEvento
+FROM reservas r
+INNER JOIN usuarios u ON r.usuariocpf = u.cpf
+INNER JOIN eventos e ON r.eventoid = e.id
+WHERE r.usuariocpf = @Cpf
+```
+
+---
+
 ## Tecnologias Utilizadas
 
 | Tecnologia | Versão | Função |
@@ -204,3 +276,15 @@ Cadastra um novo cupom de desconto. Retorna `400` se o código já existir ou os
 | xUnit | 2.5.3 | Framework de testes |
 | NSubstitute | 5.1.0 | Mocking para testes unitários |
 | PostgreSQL | 14+ | Banco de dados relacional |
+
+---
+
+**Colaboradores**
+
+| Alunos | Matricula |
+|--------|-----------|
+| Lucas Frotte Lafin | 06010493 |
+| Ana Luiza Maciel Mattos | 06009322 |
+| Ana Carolina Tomas | 06010096 |
+| Alexandre dos Santos | 06010479 |
+| Gabriel Duarte de Oliveira | 06010804 |

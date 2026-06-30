@@ -7,4 +7,5 @@ public interface IEventoRepository
 {
     Task<IEnumerable<EventoListarDto>> ListarEventos();
     Task Criar(Evento evento);
+    Task<Evento?> ObterPorId(int id);
 }

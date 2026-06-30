@@ -65,6 +65,44 @@
             </MudCardActions>
         </MudCard>
     </MudItem>
+
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="3" Class="rounded-lg h-100" Style="border: 2px solid var(--mud-palette-success);">
+            <MudCardContent>
+                <div class="d-flex align-center mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Success" Size="Size.Large" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold">Comprar Ingresso</MudText>
+                </div>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Compre ingressos com validação automática de capacidade e bloqueio de cambistas.
+                </MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/comprar-ingresso" Variant="Variant.Filled" Color="Color.Success" EndIcon="@Icons.Material.Filled.ArrowForward">
+                    Comprar Agora
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="3" Class="rounded-lg h-100" Style="border: 2px solid var(--mud-palette-info);">
+            <MudCardContent>
+                <div class="d-flex align-center mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.ConfirmationNumber" Color="Color.Info" Size="Size.Large" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Class="fw-bold">Meus Ingressos</MudText>
+                </div>
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                    Consulte todos os seus ingressos comprados com detalhes completos.
+                </MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/meus-ingressos" Variant="Variant.Filled" Color="Color.Info" EndIcon="@Icons.Material.Filled.ArrowForward">
+                    Ver Ingressos
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
 </MudGrid>
 
 <MudDivider Class="my-8" />
@@ -175,7 +213,7 @@ else
                 </MudCardContent>
                 <MudCardActions Class="px-4 pb-4 d-flex justify-space-between">
                     <MudButton Variant="Variant.Text" OnClick="FecharEvento">Fechar</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart" Href="/comprar-ingresso">
                         Comprar
                     </MudButton>
                 </MudCardActions>

@@ -22,4 +22,13 @@ public class UsuarioRepository(DbConnectionFactory factory) : IUsuarioRepository
             usuario
         );
     }
+
+    public async Task<Usuario?> ObterPorCpf(string cpf)
+    {
+        using var db = factory.CreateConnection();
+        return await db.QueryFirstOrDefaultAsync<Usuario>(
+            "SELECT * FROM usuarios WHERE cpf = @Cpf",
+            new { Cpf = cpf }
+        );
+    }
 }

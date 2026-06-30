@@ -22,4 +22,13 @@ public class EventoRepository(DbConnectionFactory factory) : IEventoRepository
             evento
         );
     }
+
+    public async Task<Evento?> ObterPorId(int id)
+    {
+        using var db = factory.CreateConnection();
+        return await db.QueryFirstOrDefaultAsync<Evento>(
+            "SELECT * FROM eventos WHERE id = @Id",
+            new { Id = id }
+        );
+    }
 }

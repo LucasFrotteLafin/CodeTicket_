@@ -11,7 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.IsProduction()
-        ? "https://codeticket-production.up.railway.app"
+        ? "https://codeticket-api.onrender.com"
         : "http://localhost:5007")
 });
 
