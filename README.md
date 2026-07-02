@@ -285,6 +285,6 @@ Lista todos os ingressos comprados por um usuário (com JOIN entre tabelas).
 |-------|-----------|
 | Lucas Frotte Lafin | 06010493 |
 | Ana Luiza Maciel Mattos | 06009322 |
-| Ana Carolina Tomas | 06010096 |
+| Pedro Nogueira Teodosio | 06010196 |
 | Alexandre dos Santos | 06010479 |
 | Gabriel Duarte de Oliveira | 06010804 |
