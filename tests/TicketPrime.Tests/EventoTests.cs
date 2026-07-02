@@ -19,10 +19,10 @@ public class EventoTests
     [Fact]
     public async Task CriarEvento_DadosValidos_RetornaSucesso()
     {
+        // Arrange
         var repo = Substitute.For<IEventoRepository>();
         var usuarioRepo = Substitute.For<IUsuarioRepository>();
         usuarioRepo.BuscarPorCpf(Arg.Any<string>()).Returns(new Usuario { Cpf = "12345678901" });
-        
         var service = new EventoService(repo, usuarioRepo);
         var dto = new CriarEventoDto
         {
@@ -33,14 +33,17 @@ public class EventoTests
             UsuarioCpf = "12345678901"
         };
 
+        // Act
         var (sucesso, _) = await service.CriarEvento(dto);
 
+        // Assert
         Assert.True(sucesso);
     }
 
     [Fact]
     public async Task CriarEvento_CapacidadeZero_RetornaErro()
     {
+        // Arrange
         var service = CriarService();
         var dto = new CriarEventoDto
         {
@@ -50,14 +53,17 @@ public class EventoTests
             PrecoPadrao = 150.00m
         };
 
+        // Act
         var (sucesso, _) = await service.CriarEvento(dto);
 
+        // Assert
         Assert.False(sucesso);
     }
 
     [Fact]
     public async Task CriarEvento_DataPassada_RetornaErro()
     {
+        // Arrange
         var service = CriarService();
         var dto = new CriarEventoDto
         {
@@ -67,14 +73,17 @@ public class EventoTests
             PrecoPadrao = 150.00m
         };
 
+        // Act
         var (sucesso, _) = await service.CriarEvento(dto);
 
+        // Assert
         Assert.False(sucesso);
     }
 
     [Fact]
     public async Task CriarEvento_PrecoZero_RetornaErro()
     {
+        // Arrange
         var service = CriarService();
         var dto = new CriarEventoDto
         {
@@ -84,8 +93,10 @@ public class EventoTests
             PrecoPadrao = 0
         };
 
+        // Act
         var (sucesso, _) = await service.CriarEvento(dto);
 
+        // Assert
         Assert.False(sucesso);
     }
 }
